@@ -19,13 +19,26 @@ class DocumentWriter:
     ### Usage example
     ```python
     from haystack import Document
+    from haystack import Pipeline
     from haystack.components.writers import DocumentWriter
     from haystack.document_stores.in_memory import InMemoryDocumentStore
+    from haystack.document_stores.types import DuplicatePolicy
+    
     docs = [
         Document(content="Python is a popular programming language"),
     ]
     doc_store = InMemoryDocumentStore()
-    doc_store.write_documents(docs)
+    doc_writer = DocumentWriter(doc_store, policy=DuplicatePolicy.OVERWRITE)
+    
+    pipeline = Pipeline()
+    pipeline.add_component("writer", doc_writer)
+    pipeline.run(
+        {
+            "writer": {
+                "documents": docs,
+            }
+        }
+    )
     ```
     """
 
